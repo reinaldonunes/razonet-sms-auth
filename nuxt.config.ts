@@ -4,6 +4,10 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
   ],
 
+  css: [
+    'bootstrap/dist/css/bootstrap.css',
+  ],
+
   pinia: {
     autoImports: [
       'defineStore',
