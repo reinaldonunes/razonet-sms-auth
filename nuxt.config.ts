@@ -10,6 +10,10 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
   ],
 
+  plugins: [
+    { src: '~/plugins/swalMixin.js', mode: 'client' }
+  ],
+
   pinia: {
     autoImports: [
       'defineStore',
