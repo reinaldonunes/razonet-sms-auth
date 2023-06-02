@@ -1,27 +1,48 @@
 <script lang="ts">
   import { useAuthStore } from '~/stores/auth'
+  import swalMixin from '~/plugins/swalMixin'
 
   export default defineComponent({
     name: 'CellPhoneForm',
+    mixins: [swalMixin],
     data(){
       return{
         cellphone:{
           ddi: '55',
-          ddd: null,
-          number: null
+          ddd: '',
+          number: ''
         }
       }
     },
 
     methods: {
-      validateCellphone(){
-        if(this.cellphone.ddd === null){
-          alert("Campo DDD precisa ser preenchido")
-          return false
+      validateCellphone():boolean{
+        if (!this.cellphone.ddd) {
+          this.showErrorAlert('O campo DDD precisa ser preenchido!');
+          return false;
         }
-        if (this.cellphone.number === null) {
-          alert("Campo NÚMERO precisa ser preenchido")
-          return false
+
+        // Verifica se o DDD contém apenas números
+        if (!/^\d+$/.test(this.cellphone.ddd)) {
+          this.showErrorAlert('O campo DDD precisa conter apenas números!');
+          return false;
+        }
+
+        if (!this.cellphone.number) {
+          this.showErrorAlert('O campo TELEFONE precisa ser preenchido!');
+          return false;
+        }
+
+        // Verifica se o número contém apenas números
+        if (!/^\d+$/.test(this.cellphone.number)) {
+          this.showErrorAlert('O campo DDD precisa conter apenas números!');
+          return false;
+        }
+
+      
+        if (this.cellphone.number.length < 8) {
+          this.showErrorAlert('O campo TELEFONE não está completo.');
+          return false;
         }
 
         return true
@@ -40,10 +61,19 @@
           auth.requestPin(computedCellphone)
 
           setTimeout((payload:any) => {
+            
             this.$emit('switchComponent', payload)
           },1000)
 
       },
+    },
+
+    watch:{
+      'cellphone.ddd'(){
+        if(this.cellphone.ddd.length === 2){
+          (this.$refs['phonenumber'] as HTMLInputElement).focus()
+        }
+      }
     }
   })
 </script>
@@ -62,10 +92,10 @@
         </label>
       </div>
       <div class="col-2">
-        <input type="tel" maxlength="2" class="form-control text-secondary" v-model="cellphone.ddd" placeholder="(DDD)" />
+        <input type="tel" maxlength="2" class="form-control text-secondary" v-model="cellphone.ddd" autofocus placeholder="(DDD)" />
       </div>
       <div class="col-7">
-        <input type="tel" class="form-control text-secondary" maxlength="9" v-model="cellphone.number" placeholder="9xxxx-xxxx"/>
+        <input type="tel" class="form-control text-secondary" maxlength="9" ref='phonenumber' v-model="cellphone.number" placeholder="9xxxx-xxxx"/>
       </div>
       <div class="col-12 mt-4">
         <button type="button" @click="requestPinVerification" class="btn btn-primary fw-bold w-100">ENVIAR CÓDIGO DE VERIFICAÇÃO</button>
@@ -73,7 +103,7 @@
     </div>
   </div>
 </template>
-<style scoped>
+<style>
   .max-size-card{
     margin:0 auto;
     max-width:650px;
@@ -81,5 +111,9 @@
   .pt-br-flag{
     right:10px;
     top:7px;
+  }
+  .swal-text,
+  .swal-footer{
+    text-align:center !important;
   }
 </style>
