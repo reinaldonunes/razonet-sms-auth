@@ -1,11 +1,49 @@
 <script lang="ts">
+  import { useAuthStore } from '~/stores/auth'
+
   export default defineComponent({
     name: 'CellPhoneForm',
+    data(){
+      return{
+        cellphone:{
+          ddi: '55',
+          ddd: null,
+          number: null
+        }
+      }
+    },
 
     methods: {
-      switchComponent(payload: any): void{
-        this.$emit('switchComponent', payload)
-      }
+      validateCellphone(){
+        if(this.cellphone.ddd === null){
+          alert("Campo DDD precisa ser preenchido")
+          return false
+        }
+        if (this.cellphone.number === null) {
+          alert("Campo NÚMERO precisa ser preenchido")
+          return false
+        }
+
+        return true
+      },
+
+      requestPinVerification(){
+        var validates:any = this.validateCellphone()
+
+        if(validates === false)
+          return false
+
+          const computedCellphone = Number(this.cellphone.ddi + this.cellphone.ddd + this.cellphone.number)
+
+          const auth = useAuthStore();
+
+          auth.requestPin(computedCellphone)
+
+          setTimeout((payload:any) => {
+            this.$emit('switchComponent', payload)
+          },1000)
+
+      },
     }
   })
 </script>
@@ -24,13 +62,13 @@
         </label>
       </div>
       <div class="col-2">
-        <input type="tel" maxlength="2" class="form-control text-secondary" placeholder="(DDD)" />
+        <input type="tel" maxlength="2" class="form-control text-secondary" v-model="cellphone.ddd" placeholder="(DDD)" />
       </div>
       <div class="col-7">
-        <input type="tel" class="form-control text-secondary" maxlength="9" placeholder="9xxxx-xxxx"/>
+        <input type="tel" class="form-control text-secondary" maxlength="9" v-model="cellphone.number" placeholder="9xxxx-xxxx"/>
       </div>
       <div class="col-12 mt-4">
-        <button type="button" @click="switchComponent" class="btn btn-primary fw-bold w-100">ENVIAR CÓDIGO DE VERIFICAÇÃO</button>
+        <button type="button" @click="requestPinVerification" class="btn btn-primary fw-bold w-100">ENVIAR CÓDIGO DE VERIFICAÇÃO</button>
       </div>
     </div>
   </div>
