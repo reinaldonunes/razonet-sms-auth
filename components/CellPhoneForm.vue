@@ -61,11 +61,21 @@
           auth.requestPin(computedCellphone)
 
           setTimeout((payload:any) => {
-            
-            this.$emit('switchComponent', payload)
+            this.observeResponseServer(payload)    
           },1000)
-
       },
+
+      observeResponseServer(payload: any){
+        const auth = useAuthStore();
+
+        if(auth.pin.sended === false){
+          this.showErrorAlert(auth.authenticate.message);
+        }
+
+        if(auth.pin.sended === true){
+          this.$emit('switchComponent', payload)
+        }
+      }
     },
 
     watch:{

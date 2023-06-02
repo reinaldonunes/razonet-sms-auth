@@ -3,13 +3,17 @@ import { defineStore } from 'pinia'
 export const useAuthStore = defineStore('auth', {
   state: () => {
     return {
-      isLogged: false,
-      user: null,
+      authenticate:{
+        isLogged: false,
+        message: '',
+        token: ''
+      },
+      pin:{
+        code: '',
+        sended: false
+      },
       cellphone: 0,
-      pinSended: false,
-      pinCode: 0,
-      token: null,
-
+      user:{ }
     }
   },
 
@@ -33,13 +37,13 @@ export const useAuthStore = defineStore('auth', {
       this.cellphone = cellphonenumber
 
       if(response.data.value != null){
-        this.pinSended = true
+        this.pin.sended = true
         // @ts-ignore
-        this.pinCode = response.data.value?.pin
-        // @ts-ignore
-        console.log(response.data.value?.message)
+        this.pin.code = response.data.value?.pin
+        this.authenticate.message = response.error.value?.data.error
       }else{
-        console.log(response.error.value?.data.error)
+        this.pin.sended = false
+        this.authenticate.message = response.error.value?.data.error
       }
     },
   },
