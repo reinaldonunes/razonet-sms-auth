@@ -1,6 +1,42 @@
 <script lang="ts">
+  import { useAuthStore } from '~/stores/auth'
+  
+  
   export default defineComponent({
-    name: 'PinVerification'
+    name: 'PinVerification',
+    
+    data() {
+      return {
+        input:{
+          first: '',
+          second: '',
+          third: '',
+          fourth: '',
+          fifth: '',
+          sixth: ''
+        }
+      }
+    },
+
+    methods: {
+      nextField(field: string){
+        (this.$refs[field] as HTMLInputElement).focus()
+      }
+    },
+    
+    mounted(){
+      (this.$refs['first'] as HTMLInputElement).focus()
+    },
+
+    computed:{
+      pin_generated(){
+        const auth = useAuthStore();
+        return auth.pin.code
+      },
+      pin_to_send(){
+        return Number(this.input.first + this.input.second + this.input.third + this.input.fourth + this.input.fifth + this.input.sixth)
+      }
+    }
   })
 </script>
 <template>
@@ -12,22 +48,22 @@
         <span class="fs-6 text-secondary text-center">Insira o código que enviamos por WHATSAPP para o número *****8910:</span>
       </div>
       <div class="col-2">
-        <input type="text" class="form-control" maxlength="1" />
+        <input type="text" class="form-control text-center text-center" maxlength="1" ref='first' v-model='input.first' autofocus @input="nextField('second')" />
       </div>
       <div class="col-2">
-        <input type="text" class="form-control" maxlength="1" />
+        <input type="text" class="form-control text-center" maxlength="1" ref="second" v-model='input.second' @input="nextField('third')" />
       </div>
       <div class="col-2">
-        <input type="text" class="form-control" maxlength="1" />
+        <input type="text" class="form-control text-center" maxlength="1" ref="third" v-model='input.third' @input="nextField('fourth')" />
       </div>
       <div class="col-2">
-        <input type="text" class="form-control" maxlength="1" />
+        <input type="text" class="form-control text-center" maxlength="1" ref="fourth" v-model='input.fourth' @input="nextField('fifth')" />
       </div>
       <div class="col-2">
-        <input type="text" class="form-control" maxlength="1" />
+        <input type="text" class="form-control text-center" maxlength="1" ref="fifth" v-model='input.fifth' @input="nextField('sixth')" />
       </div>
       <div class="col-2">
-        <input type="text" class="form-control" maxlength="1" />
+        <input type="text" class="form-control text-center" maxlength="1" ref="sixth" v-model='input.sixth' />
       </div>
       <div class="col-12 mt-4">
         <span class="d-block m-auto text-secondary text-center fs-6">Ainda não recebeu o código? Aguarde 00s</span>
