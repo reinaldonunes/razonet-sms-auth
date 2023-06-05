@@ -1,7 +1,6 @@
 <script lang="ts">
   import { useAuthStore } from '~/stores/auth'
-  
-  
+
   export default defineComponent({
     name: 'PinVerification',
     
@@ -14,13 +13,26 @@
           fourth: '',
           fifth: '',
           sixth: ''
-        }
+        },
       }
     },
 
     methods: {
       nextField(field: string){
         (this.$refs[field] as HTMLInputElement).focus()
+      },
+
+      requestValidPin(){
+        const auth = useAuthStore();
+
+        const dataSend = {
+          auth: {
+            pin: this.pin_to_send,
+            phone: auth.cellphone
+          }
+        }
+
+        auth.validatePin()
       }
     },
     
@@ -45,6 +57,8 @@
       <div class="col-12 d-flex text-center flex-column mb-4">
         <i class="bi bi-shield-lock-fill display-5 text-info"></i>
         <h3 class="mb-2 text-center text-info">Valide seu número para continuar</h3>
+        <span class="alert alert-info">Pin gerado: {{ pin_generated }}</span>
+        <span class="alert alert-danger">Pin validação: {{ pin_to_send }}</span>
         <span class="fs-6 text-secondary text-center">Insira o código que enviamos por WHATSAPP para o número *****8910:</span>
       </div>
       <div class="col-2">
@@ -70,7 +84,7 @@
       </div>
 
       <div class="col-12 mt-4">
-        <button type="button" class="btn btn-light w-100 text-secondary" disabled>Confirmar código</button>
+        <button type="button" @click="requestValidPin" class="btn btn-light w-100 text-secondary">Confirmar código</button>
       </div>
     </div>
   </div>
