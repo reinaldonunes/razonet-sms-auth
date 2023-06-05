@@ -9,12 +9,16 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@nuxtjs/dotenv": "^1.4.1",
     "@types/node": "^18",
     "nuxt": "^3.5.2"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
-    "bootstrap": "^5.3.0"
+    "bootstrap": "^5.3.0",
+    "bootstrap-icons": "^1.10.5",
+    "install": "^0.13.0",
+    "sweetalert": "^2.1.2"
   },
   "overrides": {
     "vue": "latest"
