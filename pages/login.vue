@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { useAuthStore } from '~/stores/auth'
+
   import CellPhoneForm from '~/components/CellPhoneForm.vue';
   import PinVerification from '~/components/PinVerification.vue';
   
@@ -24,8 +26,12 @@
         }else{
           this.currentComponent = 'CellPhoneForm'
         }
-      }
-    }
+      },
+    },
+    created() {
+      const auth = useAuthStore();
+      auth.isUserLogged('login')
+    },
   })
 </script>
 <template>
